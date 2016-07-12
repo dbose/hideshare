@@ -1,12 +1,10 @@
-/*! hideshare - v0.1.0 - 2013-09-11
-* https://github.com/arnonate/jQuery-FASS-Widget
-* Copyright (c) 2013 Nate Arnold; Licensed MIT */
+/*! imageshare - v0.1.0 - 2013-09-11
 /* ========================================================================
- * HIDESHARE v1.0.0
- * https://github.com/arnonate/hideshare
+ * IMAGESHARE v1.0.0
+ * https://github.com/arnonate/imageshare
  * ========================================================================
 
-  Copyright (c) 2013 Nate Arnold
+  Copyright (c) 2016 Debasish Bose
 
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation
@@ -36,159 +34,55 @@
 
   "use strict";
 
-  // HIDESHARE PUBLIC CLASS DEFINITION
+  // IMAGESHARE PUBLIC CLASS DEFINITION
   // =================================
 
-  var Hideshare = function (elem, options) {
+  var Imageshare = function (elem, options) {
     this.elem = elem;
     this.$elem = $(elem);
     this.options = options;
   };
 
-  Hideshare.prototype = {
+  Imageshare.prototype = {
     defaults: {
       link: document.URL,
       title: document.title,
       description: '',
-      media: null,
-      facebook: true,
-      twitter: true,
-      pinterest: true,
-      googleplus: true,
-      linkedin: true,
+      media: null,      
       position: "bottom",
       speed: 100
     },
 
     init: function() {
       this.config = $.extend({}, this.defaults, this.options);
-      this.wrapHideshare();
+      this.wrapImageshare();
       return this;
     },
 
-    wrapHideshare: function() {
+    wrapImageshare: function() {
       var output = output,
           width = this.$elem.outerWidth(),
           height = this.$elem.outerHeight(),
           liWidth = 0,
           placement = this.config.position,
           transition = this.config.speed,
-          shareTitle = this.config.title,
+          shareTitle = this.config.title || this.$elem.find(".media__caption").first().text(),
           shareLink = this.config.link,
-          shareMedia = this.config.media,
+          shareMedia = this.config.media || [location.host,this.$elem.find("img").first().attr("src")].join(""),
           shareDescription = this.config.description,
-          facebookTemplate = '<li><a class="hideshare-facebook" href="#"><i class="fa fa-facebook-square fa-2x"></i><span>Facebook</span></a></li>',
-          twitterTemplate = '<li><a class="hideshare-twitter" href="#"><i class="fa fa-twitter-square fa-2x"></i><span>Twitter</span></a></li>',
-          pinterestTemplate = '<li><a class="hideshare-pinterest" href="#" data-pin-do="buttonPin" data-pin-config="above"><i class="fa fa-pinterest-square fa-2x"></i><span>Pinterest</span></a></li>',
-          googleplusTemplate = '<li><a class="hideshare-google-plus" href="#"><i class="fa fa-google-plus-square fa-2x"></i><span>Google Plus</span></a></li>',
-          linkedinTemplate = '<li><a class="hideshare-linkedin" href="#"><i class="fa fa-linkedin-square fa-2x"></i><span>Linked In</span></a></li>';
 
-      if (this.config.facebook) {
-        output = facebookTemplate;
-        liWidth += 40;
-      } else {
-        output = "";
-        liWidth = liWidth;
-      }
-      if (this.config.twitter) {
-        output += twitterTemplate;
-        liWidth += 40;
-      } else {
-        output = output;
-        liWidth = liWidth;
-      }
-      if (this.config.pinterest) {
-        output += pinterestTemplate;
-        liWidth += 40;
-      } else {
-        output = output;
-        liWidth = liWidth;
-      }
-      if (this.config.googleplus) {
-        output += googleplusTemplate;
-        liWidth += 40;
-      } else {
-        output = output;
-        liWidth = liWidth;
-      }
-      if (this.config.linkedin) {
-        output += linkedinTemplate;
-        liWidth += 40;
-      } else {
-        output = output;
-        liWidth = liWidth;
-      }
-      if (liWidth < width) {
-        liWidth = width;
-      }
+          template = '<li><a class="imageshare-facebook facebook" href="#"><span class="icon--facebook">Facebook</span><span class="social__text">SHARE</span></a></li>';
+          template += '<li><a class="imageshare-twitter twitter" href="#"><span class="icon--twitter">Twitter</span><span class="social__text">TWEET</span></a></li>';
+          template += '<li><a class="imageshare-pinterest pinterest" href="#" data-pin-do="buttonPin" data-pin-config="above"><span class="icon--pinterest">Pinterest</span><span class="social__text">SAVE</span></a></li>';
+          template += '<li><a class="imageshare-google-plus google-plus" href="#"><span class="icon--google-plus">Google Plus</span><span class="social__text">G+</span></a></li>';    
 
       // Construct sharing list
-      var hideshareList = '<ul class="hideshare-list" style="display: none; width: ' + liWidth + 'px' + '">' + output + '</ul>';
-
-      // Wrap button
-      this.$elem.addClass("hideshare-btn").wrap("<div class='hideshare-wrap' style='width:" + width + "px; height:" + height + "px;' />");
-      this.$wrap = this.$elem.parent();
+      var imageshareList = '<div class="social social--share social--horizontal"><ul class="imageshare-list">' + template + '</ul></div>';
+      
+      this.$wrap = this.$elem;
 
       // Insert sharing button list
-      $(hideshareList).insertAfter(this.$elem);
-
-      // Get placement of share buttons
-      var getPlacement = function(placement, width, height, speed, $wrap) {
-
-        var styles = {};
-
-        if (placement === "right") {
-          styles = {
-            "left"    : width + 10 + "px",
-            "right"   : -(width + 10) + "px",
-            "opacity" : "toggle"
-          };
-        } else if (placement === "left") {
-          styles = {
-            "left"    : -(width + 10) + "px",
-            "right"   : width + 10 + "px",
-            "opacity" : "toggle"
-          };
-        } else if (placement === "top") {
-          styles = {
-            "top"     : -(height + 10) + "px",
-            "bottom"  : height + 10 + "px",
-            "opacity" : "toggle"
-          };
-        } else /* placement === "bottom" */ {
-          styles = {
-            "top"     : height + 10 + "px",
-            "bottom"  : -(height + 10) + "px",
-            "left"    : "0px",
-            "opacity" : "toggle"
-          };
-        }
-
-        $wrap.find(".hideshare-list").animate(styles, speed).addClass("shown");
-      };
-
-      // Return to original position
-      var returnPlacement = function(speed, $wrap) {
-        var styles = {
-          "top"     : "0px",
-          "left"    : "0px",
-          "opacity" : "toggle"
-        };
-
-        $wrap.find(".hideshare-list").animate(styles, speed).removeClass("shown");
-      };
-
-      // Toggle sharing on button click
-      this.$elem.click(function(e) {
-        var $wrap = $(e.currentTarget).parent();
-        var list = $wrap.find(".hideshare-list");
-        if (list.hasClass("shown")){
-          returnPlacement(transition, $wrap);
-        } else {
-          getPlacement(placement, width, height, transition, $wrap);
-        }
-        return false;
-      });
+      $(imageshareList).appendTo(this.$elem);
 
 
       // SHARING FUNCTIONS
@@ -204,47 +98,38 @@
       var shareGooglePlus = function() {
         window.open('//plus.google.com/share?url=' + encodeURIComponent(shareLink),'GooglePlus','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
       };
-      var shareLinkedIn = function() {
-        window.open('//www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(shareLink) + '&title=' + encodeURIComponent(shareTitle) + '&source=' + encodeURIComponent(shareLink),'LinkedIn','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
-      };
-
-
-      this.$wrap.find(".hideshare-facebook").click(function() {
+      
+      this.$wrap.find(".imageshare-facebook").click(function() {
         shareFacebook();
         return false;
       });
 
-      this.$wrap.find(".hideshare-twitter").click(function() {
+      this.$wrap.find(".imageshare-twitter").click(function() {
         shareTwitter();
         return false;
       });
 
-      this.$wrap.find(".hideshare-pinterest").click(function() {
+      this.$wrap.find(".imageshare-pinterest").click(function() {
         sharePinterest();
         return false;
       });
 
-      this.$wrap.find(".hideshare-google-plus").click(function() {
+      this.$wrap.find(".imageshare-google-plus").click(function() {
         shareGooglePlus();
-        return false;
-      });
-
-      this.$wrap.find(".hideshare-linkedin").click(function() {
-        shareLinkedIn();
         return false;
       });
 
     }
   };
 
-  Hideshare.defaults = Hideshare.prototype.defaults;
+  Imageshare.defaults = Imageshare.prototype.defaults;
 
-  $.fn.hideshare = function(options) {
+  $.fn.imageshare = function(options) {
     return this.each(function() {
-      new Hideshare(this, options).init();
+      new Imageshare(this, options).init();
     });
   };
 
-  window.Hideshare = Hideshare;
+  window.Imageshare = Imageshare;
 
 })(window, jQuery);
