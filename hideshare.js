@@ -50,7 +50,8 @@
       description: '',
       media: null,      
       position: "bottom",
-      speed: 100
+      speed: 100,
+      fbAppId: ''
     },
 
     init: function() {
@@ -70,11 +71,11 @@
           shareLink = this.config.link,
           shareMedia = this.config.media || [location.host,this.$elem.find("img").first().attr("src")].join(""),
           shareDescription = this.config.description,
-
+          fbAppID = this.config.fbAppId,
           template = '<li><a class="imageshare-facebook facebook" href="#"><span class="icon--facebook">Facebook</span><span class="social__text">SHARE</span></a></li>';
-          template += '<li><a class="imageshare-twitter twitter" href="#"><span class="icon--twitter">Twitter</span><span class="social__text">TWEET</span></a></li>';
-          template += '<li><a class="imageshare-pinterest pinterest" href="#" data-pin-do="buttonPin" data-pin-config="above"><span class="icon--pinterest">Pinterest</span><span class="social__text">SAVE</span></a></li>';
-          template += '<li><a class="imageshare-google-plus google-plus" href="#"><span class="icon--google-plus">Google Plus</span><span class="social__text">G+</span></a></li>';    
+          //template += '<li><a class="imageshare-twitter twitter" href="#"><span class="icon--twitter">Twitter</span><span class="social__text">TWEET</span></a></li>';
+          template += '<li><a class="imageshare-pinterest pinterest" href="#" data-pin-do="buttonPin" data-pin-config="above"><span class="icon--pinterest">Pinterest</span></a></li>';
+          //template += '<li><a class="imageshare-google-plus google-plus" href="#"><span class="icon--google-plus">Google Plus</span><span class="social__text">G+</span></a></li>';    
 
       // Construct sharing list
       var imageshareList = '<div class="social social--share social--horizontal"><ul class="imageshare-list">' + template + '</ul></div>';
@@ -87,37 +88,37 @@
 
       // SHARING FUNCTIONS
       var shareFacebook = function() {
-        window.open('//www.facebook.com/share.php?m2w&s=100&p[url]=' + encodeURIComponent(shareLink) + '&p[images][0]=' + encodeURIComponent(shareMedia) + '&p[title]=' + encodeURIComponent(shareTitle) + '&p[summary]=' + encodeURIComponent(shareDescription),'Facebook','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
+        window.open('https://www.facebook.com/dialog/feed?display=popup&app_id=' + fbAppID + '&link=' + encodeURIComponent(shareLink) + '&picture=' + encodeURIComponent(shareMedia) + '&name=' + encodeURIComponent(shareTitle) + '&description=' + encodeURIComponent(shareDescription),'Facebook','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
       };
-      var shareTwitter = function() {
-        window.open('https://twitter.com/intent/tweet?original_referer=' + encodeURIComponent(shareLink) + '&text=' + encodeURIComponent(shareTitle) + '%20' + encodeURIComponent(shareLink),'Twitter','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
-      };
+      // var shareTwitter = function() {
+      //   window.open('https://twitter.com/intent/tweet?original_referer=' + encodeURIComponent(shareLink) + '&text=' + encodeURIComponent(shareTitle) + '%20' + encodeURIComponent(shareLink),'Twitter','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
+      // };
       var sharePinterest = function() {
-        window.open('//pinterest.com/pin/create/button/?url=' + encodeURIComponent(shareLink) + '&media=' + encodeURIComponent(shareMedia) + '&description=' + encodeURIComponent(shareTitle),'Pinterest','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
+        window.open('//pinterest.com/pin/create/button/?url=' + encodeURIComponent(shareLink) + '&media=' + encodeURIComponent(['http://',shareMedia].join('')) + '&description=' + encodeURIComponent(shareTitle),'Pinterest','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
       };
-      var shareGooglePlus = function() {
-        window.open('//plus.google.com/share?url=' + encodeURIComponent(shareLink),'GooglePlus','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
-      };
+      // var shareGooglePlus = function() {
+      //   window.open('//plus.google.com/share?url=' + encodeURIComponent(shareLink),'GooglePlus','menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');
+      // };
       
       this.$wrap.find(".imageshare-facebook").click(function() {
         shareFacebook();
         return false;
       });
 
-      this.$wrap.find(".imageshare-twitter").click(function() {
-        shareTwitter();
-        return false;
-      });
+      // this.$wrap.find(".imageshare-twitter").click(function() {
+      //   shareTwitter();
+      //   return false;
+      // });
 
       this.$wrap.find(".imageshare-pinterest").click(function() {
         sharePinterest();
         return false;
       });
 
-      this.$wrap.find(".imageshare-google-plus").click(function() {
-        shareGooglePlus();
-        return false;
-      });
+      // this.$wrap.find(".imageshare-google-plus").click(function() {
+      //   shareGooglePlus();
+      //   return false;
+      // });
 
     }
   };
